@@ -553,6 +553,7 @@ header h1 .icon-book {
   color: white !important;
   border-color: #5568d3;
   font-weight: 600;
+  font-size: 22px;
 }
 
 .grid-day-cell {
@@ -565,6 +566,7 @@ header h1 .icon-book {
   min-width: 270px;
   flex: 0 0 270px;
   height: 100%;
+  font-size: 22px !important;
   
 }
 
