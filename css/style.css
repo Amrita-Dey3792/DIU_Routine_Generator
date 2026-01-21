@@ -454,7 +454,6 @@ header h1 .icon-book {
 /* Routine Table */
 .routine-table {
   width: 100%;
-  min-width: 800px;
   border-collapse: collapse;
   background: white;
   table-layout: fixed;
@@ -474,10 +473,11 @@ header h1 .icon-book {
   font-weight: 600;
   border: 1px solid #5568d3;
   word-wrap: break-word;
+  width: 200px;
 }
 
 .routine-table th:first-child {
-  min-width: 120px;
+  width: 120px;
   position: sticky;
   left: 0;
   z-index: 11;
@@ -491,17 +491,7 @@ header h1 .icon-book {
   position: sticky;
   left: 0;
   z-index: 9;
-  min-width: 120px;
-}
-
-.routine-table tbody th {
-  background: #667eea;
-  color: white;
-  font-weight: 600;
-  position: sticky;
-  left: 0;
-  z-index: 9;
-  min-width: 120px;
+  width: 120px;
 }
 
 .routine-table td {
@@ -510,8 +500,8 @@ header h1 .icon-book {
   border: 1px solid #e0e0e0;
   vertical-align: middle;
   min-height: 80px;
-  white-space: nowrap;
   word-wrap: break-word;
+  width: 200px;
 }
 
 .routine-table tbody tr:nth-child(even) {
