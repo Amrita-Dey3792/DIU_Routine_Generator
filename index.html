@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+      <div class="splash-content">
+        <div class="splash-logo">📚</div>
+        <h1 class="splash-title">DIU Routine Generator</h1>
+        <p class="splash-subtitle">Create and download your weekly class routine</p>
+        <div class="splash-loader">
+          <div class="loader-bar"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <header>
         <h1>DIU Routine Generator</h1>
@@ -115,8 +127,10 @@
           </div>
 
           <div id="routinePreview" class="routine-preview">
-            <div class="preview-placeholder">
-              <p>Add classes to see the routine preview</p>
+            <div class="table-wrapper">
+              <div class="preview-placeholder">
+                <p>Add classes to see the routine preview</p>
+              </div>
             </div>
           </div>
         </section>

@@ -1,5 +1,16 @@
 // Routine Generator - Main JavaScript File
 
+// Splash screen handler
+window.addEventListener("load", function () {
+  const splashScreen = document.getElementById("splashScreen");
+  if (splashScreen) {
+    setTimeout(() => {
+      splashScreen.style.opacity = "0";
+      splashScreen.style.pointerEvents = "none";
+    }, 2500);
+  }
+});
+
 // Store classes data
 let classes = [];
 let classIdCounter = 0;
@@ -8,8 +19,8 @@ let classIdCounter = 0;
 const subjectColors = {
   "C.Morphology": { bg: "#fff3cd", border: "#ffc107", text: "#856404" },
   "P.Pathology": { bg: "#f8d7da", border: "#dc3545", text: "#721c24" },
-  "GPB": { bg: "#d1ecf1", border: "#17a2b8", text: "#0c5460" },
-  "default": { bg: "#e3e8ff", border: "#667eea", text: "#667eea" },
+  GPB: { bg: "#d1ecf1", border: "#17a2b8", text: "#0c5460" },
+  default: { bg: "#e3e8ff", border: "#667eea", text: "#667eea" },
 };
 
 // Subject map to store assigned colors
@@ -164,19 +175,19 @@ function updateClassesList() {
     .map(
       (classItem) => `
         <div class="class-item ${classItem.classType.toLowerCase()}" data-id="${
-        classItem.id
-      }">
+          classItem.id
+        }">
             <div class="class-info">
                 <strong>${classItem.subjectName}</strong>
                 <span>${classItem.day} • ${classItem.timeSlot} • ${
-        classItem.classType
-      } • Room ${classItem.roomNumber}</span>
+                  classItem.classType
+                } • Room ${classItem.roomNumber}</span>
             </div>
             <button type="button" class="btn-remove" onclick="removeClass(${
               classItem.id
             })">Remove</button>
         </div>
-    `
+    `,
     )
     .join("");
 }
@@ -235,7 +246,7 @@ function updatePreview() {
     allTimeSlots.forEach((slot) => {
       // Find classes for this day and time slot
       const dayClasses = classes.filter(
-        (c) => c.day === day && c.timeSlot === slot
+        (c) => c.day === day && c.timeSlot === slot,
       );
 
       if (dayClasses.length > 0) {
@@ -272,7 +283,38 @@ function updatePreview() {
 
   tableHTML += "</tbody></table>";
 
-  routinePreview.innerHTML = tableHTML;
+  // Build card view for mobile
+  let cardHTML = '<div class="routine-cards">';
+  
+  daysOrder.forEach((day) => {
+    const dayClasses = classes.filter((c) => c.day === day);
+    cardHTML += `<div class="day-card">
+      <h3 class="day-title">${day}</h3>
+      <div class="classes-in-day">`;
+    
+    if (dayClasses.length === 0) {
+      cardHTML += '<p class="no-class">No classes</p>';
+    } else {
+      dayClasses.forEach((cls) => {
+        const colors = getSubjectColor(cls.subjectName);
+        cardHTML += `
+          <div class="class-card" style="border-left: 4px solid ${colors.border}; background-color: ${colors.bg};">
+            <div class="class-card-time">${cls.timeSlot}</div>
+            <div class="class-card-subject" style="color: ${colors.text};">${cls.subjectName}</div>
+            <div class="class-card-type">${cls.classType}</div>
+            <div class="class-card-room">Room ${cls.roomNumber}</div>
+          </div>
+        `;
+      });
+    }
+    
+    cardHTML += '</div></div>';
+  });
+  
+  cardHTML += '<div class="day-card off-day-card"><h3 class="day-title">Friday</h3><div class="no-class">OFF</div></div>';
+  cardHTML += '</div>';
+
+  routinePreview.innerHTML = `<div class="table-wrapper">${tableHTML}</div><div class="card-view">${cardHTML}</div>`;
 }
 
 // Download routine as image
@@ -298,6 +340,16 @@ function downloadRoutine() {
 
   // Get the routine preview element
   const element = routinePreview;
+  
+  // Store original display states
+  const tableWrapper = element.querySelector(".table-wrapper");
+  const cardView = element.querySelector(".card-view");
+  const originalTableDisplay = tableWrapper ? tableWrapper.style.display : "";
+  const originalCardDisplay = cardView ? cardView.style.display : "";
+  
+  // Show table view for download
+  if (tableWrapper) tableWrapper.style.display = "block";
+  if (cardView) cardView.style.display = "none";
 
   // Use html2canvas to convert to image
   html2canvas(element, {
@@ -319,6 +371,10 @@ function downloadRoutine() {
       link.click();
       document.body.removeChild(link);
 
+      // Restore original display states
+      if (tableWrapper) tableWrapper.style.display = originalTableDisplay;
+      if (cardView) cardView.style.display = originalCardDisplay;
+
       // Reset button
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = `
@@ -331,6 +387,11 @@ function downloadRoutine() {
     .catch((error) => {
       console.error("Error generating image:", error);
       alert("Error generating image. Please try again.");
+      
+      // Restore original display states
+      if (tableWrapper) tableWrapper.style.display = originalTableDisplay;
+      if (cardView) cardView.style.display = originalCardDisplay;
+      
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = `
             <svg class="icon icon-download" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
