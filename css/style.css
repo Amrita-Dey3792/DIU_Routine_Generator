@@ -5,11 +5,12 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  padding: 20px;
+ 
   color: #333;
 }
 
@@ -69,7 +70,8 @@ body {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -99,6 +101,9 @@ body {
 .container {
   max-width: 1600px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Header */
@@ -134,6 +139,7 @@ header h1 .icon-book {
   grid-template-columns: 1fr 1.5fr;
   gap: 30px;
   align-items: start;
+  flex: 1;
 }
 
 /* Form Section */
@@ -373,6 +379,7 @@ header h1 .icon-book {
   border-radius: 15px;
   padding: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  
 }
 
 .preview-header {
@@ -396,13 +403,14 @@ header h1 .icon-book {
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   overflow-x: auto;
-  overflow-y: visible;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 /* Custom Scrollbar Styles */
 .routine-preview::-webkit-scrollbar {
   height: 10px;
+  width: 10px;
 }
 
 .routine-preview::-webkit-scrollbar-track {
@@ -413,10 +421,17 @@ header h1 .icon-book {
 .routine-preview::-webkit-scrollbar-thumb {
   background: #667eea;
   border-radius: 10px;
+  min-width: 40px;
 }
 
 .routine-preview::-webkit-scrollbar-thumb:hover {
   background: #5568d3;
+}
+
+/* Firefox Scrollbar */
+.routine-preview {
+  scrollbar-color: #667eea #f1f1f1;
+  scrollbar-width: thin;
 }
 
 .table-wrapper {
@@ -451,65 +466,144 @@ header h1 .icon-book {
   font-size: 1.1rem;
 }
 
-/* Routine Table */
-.routine-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Routine Grid (Div based instead of table) */
+.routine-grid {
+  display: flex;
+  flex-direction: column;
   background: white;
-  table-layout: fixed;
 }
 
-.routine-table thead {
+.grid-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+
+}
+
+.grid-cell {
+  flex: 0 0 270px;
+  min-width: 270px;
+  padding: 20px 10px;
+  text-align: center;
+  border-right: 1px solid #e0e0e0;
+  vertical-align: middle;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-wrap: break-word;
+  word-break: break-word;
+  height: 100% !important;
+  
+}
+
+
+.grid-cell:first-child {
+  padding: 0;
+}
+
+.grid-cell:last-child {
+  border-right: none;
+}
+
+/* Saturday (2nd row) and Monday (4th row) highlight */
+.grid-row:nth-child(2) .grid-cell {
+  background: #f3f5ff;
+}
+
+.grid-row:nth-child(3) .grid-cell {
+  background: #f3f5ff;
+}
+
+.grid-row:nth-child(4) .grid-cell {
+  background: #f3f5ff;
+}
+
+/* Default alternating colors for other days */
+.grid-row:nth-child(even):not(:nth-child(2)):not(:nth-child(4)) .grid-cell {
+  background: #f8f9fa;
+}
+
+/* Odd rows background */
+.grid-row:nth-child(odd):not(:nth-child(1)) .grid-cell {
+  background: white;
+}
+
+.grid-row:nth-child(2):hover .grid-cell,
+.grid-row:nth-child(4):hover .grid-cell {
+  background: #e8ebf8;
+}
+
+.grid-row:hover .grid-cell {
+  background: #f0f0f0;
+}
+
+.grid-header {
   background: #667eea;
   color: white;
+  font-weight: 600;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.routine-table th {
-  padding: 15px 10px;
-  text-align: center;
+.grid-header-cell {
+  background: #667eea;
+  color: white !important;
+  border-color: #5568d3;
   font-weight: 600;
-  border: 1px solid #5568d3;
-  word-wrap: break-word;
-  min-width: 250px;
 }
 
-.routine-table th:first-child {
-  min-width: 250px;
-  position: sticky;
-  left: 0;
-  z-index: 11;
-  background: #667eea;
-}
-
-.routine-table tbody th {
-  background: #667eea;
-  color: white;
+.grid-day-cell {
+  background: #667eea !important;
+  color: white !important;
   font-weight: 600;
   position: sticky;
   left: 0;
   z-index: 9;
-  min-width: 250px;
+  min-width: 270px;
+  flex: 0 0 270px;
+  height: 100%;
+  
 }
 
-.routine-table td {
-  padding: 20px 10px;
+/* Ensure day cells have background on all rows */
+.grid-row:nth-child(2) .grid-day-cell,
+.grid-row:nth-child(3) .grid-day-cell,
+.grid-row:nth-child(4) .grid-day-cell,
+.grid-row:nth-child(5) .grid-day-cell,
+.grid-row:nth-child(6) .grid-day-cell,
+.grid-row:nth-child(7) .grid-day-cell,
+.grid-row:nth-child(8) .grid-day-cell,
+.grid-row:nth-child(9) .grid-day-cell {
+  background: #667eea !important;
+  color: #333;
+}
+
+/* Ensure first cell of all rows has background */
+.grid-row .grid-cell:first-child {
+  background: #667eea !important;
+  color: #333;
+}
+
+.grid-cell-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty-cell {
+  color: #ccc;
+  font-style: italic;
+}
+
+.off-day {
+  background: #fff3cd;
+  color: #856404;
+  font-weight: 600;
   text-align: center;
-  border: 1px solid #e0e0e0;
-  vertical-align: middle;
-  min-height: 80px;
-  word-wrap: break-word;
-  min-width: 250px;
-}
-
-.routine-table tbody tr:nth-child(even) {
-  background: #f8f9fa;
-}
-
-.routine-table tbody tr:hover {
-  background: #f0f0f0;
 }
 
 /* Class Cell Styles */
@@ -543,7 +637,7 @@ header h1 .icon-book {
 }
 
 .class-cell-subject {
-  font-size: 1rem;
+  font-size: 18px;
   margin-bottom: 5px;
   font-weight: 700;
 }
@@ -664,20 +758,15 @@ header h1 .icon-book {
     font-size: 0.85rem;
   }
 
-  .routine-table {
+  .routine-grid {
     font-size: 0.8rem;
-    min-width: 100%;
-    table-layout: auto;
   }
 
-  .routine-table th,
-  .routine-table td {
+  .grid-cell,
+  .grid-day-cell {
     padding: 8px 5px;
-    white-space: nowrap;
-  }
-
-  .routine-table th:first-child {
-    min-width: auto;
+    min-width: 270px;
+    flex: 0 0 270px;
   }
 
   .class-cell {
@@ -760,17 +849,15 @@ header h1 .icon-book {
     font-size: 0.8rem;
   }
 
-  .routine-table {
+  .routine-grid {
     font-size: 0.8rem;
-    width: 100%;
-    table-layout: auto;
-    border-collapse: collapse;
   }
 
-  .routine-table th,
-  .routine-table td {
+  .grid-cell,
+  .grid-day-cell {
     padding: 8px 5px;
-    white-space: nowrap;
+    min-width: 270px;
+    flex: 0 0 270px;
   }
 
   .class-cell {
@@ -934,22 +1021,18 @@ header h1 .icon-book {
 
   .routine-preview {
     border: 1px solid #ddd;
-
     overflow: auto;
   }
 
-  .routine-table {
+  .routine-grid {
     font-size: 0.65rem;
-    min-width: 480px;
   }
 
-  .routine-table th,
-  .routine-table td {
+  .grid-cell,
+  .grid-day-cell {
     padding: 5px 3px;
-  }
-
-  .routine-table th:first-child {
-    min-width: 80px;
+    min-width: 270px;
+    flex: 0 0 270px;
   }
 
   .class-cell {
@@ -1008,6 +1091,17 @@ header h1 .icon-book {
   .routine-table th,
   .routine-table td {
     padding: 4px 2px;
+  }
+
+  .routine-grid {
+    font-size: 0.6rem;
+  }
+
+  .grid-cell,
+  .grid-day-cell {
+    padding: 4px 2px;
+    min-width: 270px;
+    flex: 0 0 270px;
   }
 
   .class-cell-subject {

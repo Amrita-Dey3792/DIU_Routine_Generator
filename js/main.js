@@ -56,6 +56,9 @@ const clearAllBtn = document.getElementById("clearAll");
 
 // Initialize
 document.addEventListener("DOMContentLoaded", function () {
+  // Load data from localStorage
+  loadFromLocalStorage();
+
   // Form submission handler
   classForm.addEventListener("submit", handleFormSubmit);
 
@@ -68,6 +71,33 @@ document.addEventListener("DOMContentLoaded", function () {
   // Update preview on load
   updatePreview();
 });
+
+// Save data to localStorage
+function saveToLocalStorage() {
+  const data = {
+    classes: classes,
+    classIdCounter: classIdCounter,
+    subjectColorMap: subjectColorMap,
+  };
+  localStorage.setItem("routineData", JSON.stringify(data));
+}
+
+// Load data from localStorage
+function loadFromLocalStorage() {
+  const savedData = localStorage.getItem("routineData");
+  if (savedData) {
+    try {
+      const data = JSON.parse(savedData);
+      classes = data.classes || [];
+      classIdCounter = data.classIdCounter || 0;
+      subjectColorMap = data.subjectColorMap || {};
+      updateClassesList();
+      updatePreview();
+    } catch (error) {
+      console.error("Error loading data from localStorage:", error);
+    }
+  }
+}
 
 // Helper function to get color for subject
 function getSubjectColor(subjectName) {
@@ -159,6 +189,7 @@ function handleFormSubmit(e) {
   // Update UI
   updateClassesList();
   updatePreview();
+  saveToLocalStorage();
 }
 
 // Update classes list display
@@ -197,6 +228,7 @@ function removeClass(id) {
   classes = classes.filter((c) => c.id !== id);
   updateClassesList();
   updatePreview();
+  saveToLocalStorage();
 }
 
 // Clear all classes
@@ -209,8 +241,10 @@ function clearAllClasses() {
   if (confirm("Are you sure you want to clear all classes?")) {
     classes = [];
     classIdCounter = 0;
+    subjectColorMap = {};
     updateClassesList();
     updatePreview();
+    saveToLocalStorage();
   }
 }
 
@@ -230,18 +264,21 @@ function updatePreview() {
     ...new Set(classes.map((c) => c.timeSlot)),
   ]);
 
-  // Build table HTML
-  let tableHTML = '<table class="routine-table"><thead><tr><th>Day/Time</th>';
+  // Build grid HTML (div based)
+  let gridHTML = '<div class="routine-grid">';
 
-  // Add time slot headers
+  // Add header row
+  gridHTML += '<div class="grid-row grid-header">';
+  gridHTML += '<div class="grid-cell grid-header-cell">Day/Time</div>';
   allTimeSlots.forEach((slot) => {
-    tableHTML += `<th>${slot}</th>`;
+    gridHTML += `<div class="grid-cell grid-header-cell">${slot}</div>`;
   });
-  tableHTML += "</tr></thead><tbody>";
+  gridHTML += "</div>";
 
   // Add rows for each day
   daysOrder.forEach((day) => {
-    tableHTML += `<tr><th>${day}</th>`;
+    gridHTML += '<div class="grid-row">';
+    gridHTML += `<div class="grid-cell grid-day-cell">${day}</div>`;
 
     allTimeSlots.forEach((slot) => {
       // Find classes for this day and time slot
@@ -250,49 +287,47 @@ function updatePreview() {
       );
 
       if (dayClasses.length > 0) {
-        // Multiple classes in same slot (shouldn't happen, but handle it)
-        let cellContent = "";
+        // Multiple classes in same slot
+        let cellContent = '<div class="grid-cell-content">';
         dayClasses.forEach((cls) => {
           const colors = getSubjectColor(cls.subjectName);
           cellContent += `
-                        <div class="class-cell ${cls.classType.toLowerCase()}" style="background-color: ${colors.bg}; border-color: ${colors.border}; color: ${colors.text};">
-                            <div class="class-cell-subject">${
-                              cls.subjectName
-                            }</div>
-                            <div class="class-cell-type">${
-                              cls.classType
-                            }</div>
-                            <div class="class-cell-room">Room ${cls.roomNumber}</div>
-                        </div>
-                    `;
+            <div class="class-cell ${cls.classType.toLowerCase()}" style="background-color: ${colors.bg}; border-color: ${colors.border}; color: ${colors.text};">
+              <div class="class-cell-subject">${cls.subjectName}</div>
+              <div class="class-cell-type">${cls.classType}</div>
+              <div class="class-cell-room">Room ${cls.roomNumber}</div>
+            </div>
+          `;
         });
-        tableHTML += `<td>${cellContent}</td>`;
+        cellContent += "</div>";
+        gridHTML += `<div class="grid-cell">${cellContent}</div>`;
       } else {
-        tableHTML += '<td class="empty-cell">-</td>';
+        gridHTML += '<div class="grid-cell empty-cell">-</div>';
       }
     });
 
-    tableHTML += "</tr>";
+    gridHTML += "</div>";
   });
 
   // Add OFF day row (Friday)
-  tableHTML += "<tr><th>Friday</th>";
+  gridHTML += '<div class="grid-row">';
+  gridHTML += '<div class="grid-cell grid-day-cell">Friday</div>';
   allTimeSlots.forEach(() => {
-    tableHTML += '<td class="off-day">OFF</td>';
+    gridHTML += '<div class="grid-cell off-day">OFF</div>';
   });
-  tableHTML += "</tr>";
+  gridHTML += "</div>";
 
-  tableHTML += "</tbody></table>";
+  gridHTML += "</div>";
 
   // Build card view for mobile
   let cardHTML = '<div class="routine-cards">';
-  
+
   daysOrder.forEach((day) => {
     const dayClasses = classes.filter((c) => c.day === day);
     cardHTML += `<div class="day-card">
       <h3 class="day-title">${day}</h3>
       <div class="classes-in-day">`;
-    
+
     if (dayClasses.length === 0) {
       cardHTML += '<p class="no-class">No classes</p>';
     } else {
@@ -308,14 +343,15 @@ function updatePreview() {
         `;
       });
     }
-    
-    cardHTML += '</div></div>';
-  });
-  
-  cardHTML += '<div class="day-card off-day-card"><h3 class="day-title">Friday</h3><div class="no-class">OFF</div></div>';
-  cardHTML += '</div>';
 
-  routinePreview.innerHTML = `<div class="table-wrapper">${tableHTML}</div><div class="card-view">${cardHTML}</div>`;
+    cardHTML += "</div></div>";
+  });
+
+  cardHTML +=
+    '<div class="day-card off-day-card"><h3 class="day-title">Friday</h3><div class="no-class">OFF</div></div>';
+  cardHTML += "</div>";
+
+  routinePreview.innerHTML = `<div class="table-wrapper">${gridHTML}</div><div class="card-view">${cardHTML}</div>`;
 }
 
 // Download routine as image
@@ -341,13 +377,13 @@ function downloadRoutine() {
 
   // Get the routine preview element
   const element = routinePreview;
-  
+
   // Store original display states
   const tableWrapper = element.querySelector(".table-wrapper");
   const cardView = element.querySelector(".card-view");
   const originalTableDisplay = tableWrapper ? tableWrapper.style.display : "";
   const originalCardDisplay = cardView ? cardView.style.display : "";
-  
+
   // Show table view for download
   if (tableWrapper) tableWrapper.style.display = "block";
   if (cardView) cardView.style.display = "none";
@@ -388,11 +424,11 @@ function downloadRoutine() {
     .catch((error) => {
       console.error("Error generating image:", error);
       alert("Error generating image. Please try again.");
-      
+
       // Restore original display states
       if (tableWrapper) tableWrapper.style.display = originalTableDisplay;
       if (cardView) cardView.style.display = originalCardDisplay;
-      
+
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = `
             <svg class="icon icon-download" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
