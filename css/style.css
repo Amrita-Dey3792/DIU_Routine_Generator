@@ -644,20 +644,29 @@ header h1 .icon-book {
 
   .routine-table {
     font-size: 0.8rem;
-    min-width: 600px;
+    min-width: 100%;
+    table-layout: auto;
   }
 
   .routine-table th,
   .routine-table td {
     padding: 8px 5px;
+    white-space: nowrap;
   }
 
   .routine-table th:first-child {
-    min-width: 100px;
+    min-width: auto;
+  }
+
+  .class-cell {
+    padding: 10px;
+    margin: 5px 0;
+    font-size: 0.85rem;
   }
 
   .class-cell-subject {
     font-size: 0.85rem;
+    margin-bottom: 5px;
   }
 
   .class-cell-details {
@@ -730,21 +739,31 @@ header h1 .icon-book {
   }
 
   .routine-table {
-    font-size: 0.75rem;
-    min-width: 550px;
+    font-size: 0.8rem;
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
   }
 
   .routine-table th,
   .routine-table td {
-    padding: 6px 3px;
+    padding: 8px 5px;
+    white-space: nowrap;
+  }
+
+  .class-cell {
+    padding: 10px;
+    margin: 5px 0;
+    font-size: 0.85rem;
   }
 
   .class-cell-subject {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
   }
 
   .class-cell-details {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 }
 
