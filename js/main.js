@@ -259,9 +259,10 @@ function updatePreview() {
                             <div class="class-cell-subject">${
                               cls.subjectName
                             }</div>
-                            <div class="class-cell-details">${
+                            <div class="class-cell-type">${
                               cls.classType
-                            } • Room ${cls.roomNumber}</div>
+                            }</div>
+                            <div class="class-cell-room">Room ${cls.roomNumber}</div>
                         </div>
                     `;
         });
