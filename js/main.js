@@ -4,6 +4,17 @@
 let classes = [];
 let classIdCounter = 0;
 
+// Color palette for different subjects
+const subjectColors = {
+  "C.Morphology": { bg: "#fff3cd", border: "#ffc107", text: "#856404" },
+  "P.Pathology": { bg: "#f8d7da", border: "#dc3545", text: "#721c24" },
+  "GPB": { bg: "#d1ecf1", border: "#17a2b8", text: "#0c5460" },
+  "default": { bg: "#e3e8ff", border: "#667eea", text: "#667eea" },
+};
+
+// Subject map to store assigned colors
+let subjectColorMap = {};
+
 // Days order (Saturday to Thursday, with Friday as OFF)
 const daysOrder = [
   "Saturday",
@@ -46,6 +57,35 @@ document.addEventListener("DOMContentLoaded", function () {
   // Update preview on load
   updatePreview();
 });
+
+// Helper function to get color for subject
+function getSubjectColor(subjectName) {
+  // Check if subject already has a color assigned
+  if (subjectColorMap[subjectName]) {
+    return subjectColorMap[subjectName];
+  }
+
+  // Check if it's a predefined subject
+  if (subjectColors[subjectName]) {
+    subjectColorMap[subjectName] = subjectColors[subjectName];
+    return subjectColors[subjectName];
+  }
+
+  // Generate a unique color for new subjects
+  const colorPalette = [
+    { bg: "#e8f4f8", border: "#20c997", text: "#0c5460" },
+    { bg: "#f0f4e8", border: "#6f42c1", text: "#383d41" },
+    { bg: "#fff5e6", border: "#fd7e14", text: "#856404" },
+    { bg: "#ffe6e6", border: "#e83e8c", text: "#721c24" },
+    { bg: "#e6f3ff", border: "#0d6efd", text: "#004085" },
+    { bg: "#f0e6ff", border: "#6610f2", text: "#4a235a" },
+  ];
+
+  const assignedCount = Object.keys(subjectColorMap).length;
+  const color = colorPalette[assignedCount % colorPalette.length];
+  subjectColorMap[subjectName] = color;
+  return color;
+}
 
 // Convert 24-hour format to 12-hour format with AM/PM
 function convertTo12Hour(time24) {
@@ -202,8 +242,9 @@ function updatePreview() {
         // Multiple classes in same slot (shouldn't happen, but handle it)
         let cellContent = "";
         dayClasses.forEach((cls) => {
+          const colors = getSubjectColor(cls.subjectName);
           cellContent += `
-                        <div class="class-cell ${cls.classType.toLowerCase()}">
+                        <div class="class-cell ${cls.classType.toLowerCase()}" style="background-color: ${colors.bg}; border-color: ${colors.border}; color: ${colors.text};">
                             <div class="class-cell-subject">${
                               cls.subjectName
                             }</div>

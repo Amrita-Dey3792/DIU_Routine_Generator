@@ -297,18 +297,24 @@ header h1 .icon-book {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .preview-header h2 {
   color: #667eea;
   font-size: 1.8rem;
+  flex: 1;
+  min-width: 200px;
 }
 
 .routine-preview {
   background: white;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
 }
 
 .preview-placeholder {
@@ -321,6 +327,7 @@ header h1 .icon-book {
 /* Routine Table */
 .routine-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   background: white;
 }
@@ -354,6 +361,7 @@ header h1 .icon-book {
   border: 1px solid #e0e0e0;
   vertical-align: middle;
   min-height: 80px;
+  white-space: nowrap;
 }
 
 .routine-table tbody tr:nth-child(even) {
@@ -371,18 +379,24 @@ header h1 .icon-book {
   margin: 5px 0;
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  border-left: 5px solid;
 }
 
 .class-cell.theory {
   background: #e3e8ff;
   color: #667eea;
+  border-color: #667eea;
   border: 2px solid #667eea;
+  border-left: 5px solid #667eea;
 }
 
 .class-cell.practical {
   background: #d4edda;
   color: #155724;
+  border-color: #28a745;
   border: 2px solid #28a745;
+  border-left: 5px solid #28a745;
 }
 
 .class-cell-subject {
@@ -415,8 +429,16 @@ header h1 .icon-book {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 0;
+  }
+
   header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .form-row {
@@ -425,6 +447,7 @@ header h1 .icon-book {
 
   .routine-table {
     font-size: 0.85rem;
+    min-width: 600px;
   }
 
   .routine-table th,
@@ -434,35 +457,62 @@ header h1 .icon-book {
 
   .preview-header {
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     align-items: stretch;
+  }
+
+  .preview-header h2 {
+    margin-bottom: 0;
   }
 
   .btn-download {
     width: 100%;
   }
+
+  .preview-section {
+    padding: 20px 10px;
+  }
+
+  .form-section {
+    padding: 20px 10px;
+  }
 }
 
 @media (max-width: 480px) {
   body {
-    padding: 10px;
+    padding: 8px;
   }
 
   .form-section,
   .preview-section {
-    padding: 20px;
+    padding: 15px;
+    border-radius: 10px;
   }
 
   .routine-table {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    min-width: 500px;
+  }
+
+  .routine-table th,
+  .routine-table td {
+    padding: 8px 4px;
   }
 
   .class-cell-subject {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .class-cell-details {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .preview-header h2 {
+    font-size: 1.5rem;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
   }
 }
 
